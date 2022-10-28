@@ -1,0 +1,27 @@
+@use 'base/mixins' as m;
+
+.pagina-no-encontrada {
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+
+    @include m.tablet {
+        margin-top: 10rem;
+    }
+
+}
+
+.no-encontrado-img {
+    height: 25rem;
+    background-image: url(../img/no-encontrada.png);
+    background-size: cover;
+    background-position: center center;
+
+    @include m.tablet {
+        margin-top: 5rem;
+    }
+
+    @include m.desktop {
+        height: 45rem;
+    }
+}
