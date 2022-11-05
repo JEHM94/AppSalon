@@ -2,6 +2,8 @@
 
 <p class="descripcion-pagina">Para reestablecer tu Contraseña escribie tu E-mail a continuación</p>
 
+<?php include_once __DIR__ . '/../templates/alertas.php' ?>
+
 <form action="/olvide" class="formulario" method="POST">
     <div class="campo">
         <label for="email">E-mail</label>

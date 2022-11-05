@@ -10,10 +10,59 @@ class LoginController
 {
     public static function login(Router $router)
     {
+        $auth = new Usuario();
+        $alertas = [];
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Obtenemos el Email y Password e instanciamos un nuevo Usuario
+            $auth =  new Usuario($_POST);
+            // Validamos el Inicio de Sesión
+            $auth->validar(CUENTA_EXISTENTE);
+            // Obtener las Alertas de validación de formulario
+            $alertas = Usuario::getAlertas();
+            // Revisar que el Usuario pase la validación del Formulario
+            if (empty($alertas)) {
+                // Buscamos si existe algún usuario con el Email ingresado
+                $usuario = Usuario::where('email', $auth->email);
+                // Si no existe el usuario Generamos el Error
+                if (empty($usuario)) {
+                    Usuario::setAlerta('error', 'El E-mail no se encuentra registrado');
+                    return;
+                } else {
+                    // Usuario encontrado, se Procede a verificar la Contraseña
+                    $verificado = $usuario->comprobarPasswordYVerificado($auth->password);
+                    // Si el Usuario ha sido verificado correctamente procedemos a Iniciar Sesión
+                    if ($verificado) {
+                        // Autenticamos al usuario
+                        session_start();
+                        // Asignamos los datos de la cuenta a la sesión
+                        $_SESSION['id'] =  $usuario->id;
+                        $_SESSION['nombre'] =  $usuario->nombre . ' ' .  $usuario->apellido;
+                        $_SESSION['email'] =  $usuario->email;
+                        $_SESSION['login'] =  true;
+                        // Redireccionamos al Usuario
+
+                        if ($usuario->admin === "1") {
+                            // Si el usuario es un administrador, agregamos Admin a la sesión
+                            $_SESSION['admin'] = $usuario->admin ?? null;
+                            // Redireccionamos a Admin
+                            header('Location: /admin');
+                            return;
+                        }
+                        // Si es un usuario regular, Redireccionamos a la página de Citas
+                        header('Location: /cita');
+                    }
+                }
+            }
         }
 
-        $router->render('auth/login', []);
+        // Obtener las Alertas de validación de formulario
+        $alertas = Usuario::getAlertas();
+
+        $router->render('auth/login', [
+            'auth' => $auth,
+            'alertas' => $alertas
+        ]);
     }
 
     public static function logout()
@@ -23,7 +72,14 @@ class LoginController
 
     public static function olvide(Router $router)
     {
-        $router->render('auth/olvide-password', []);
+        $alertas = [];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        }
+
+        $router->render('auth/olvide-password', [
+            'alertas' => $alertas
+        ]);
     }
 
     public static function recuperar()
@@ -84,7 +140,7 @@ class LoginController
             // Sincroniza los datos enviados en POST con el Usuario creado
             $usuario->sincronizar($_POST);
             // Validamos La información ingresada en el formulario
-            $usuario->validar();
+            $usuario->validar(CUENTA_NUEVA);
             // Obtener las Alertas de validación de formulario
             $alertas = Usuario::getAlertas();
             // Revisar que el Usuario pase la validación del Formulario
