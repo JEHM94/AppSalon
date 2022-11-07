@@ -19,7 +19,7 @@
         </div> <!-- .app -->
     </div> <!-- .contenedor-app -->
 
-
+    <?php echo $script ?? ''; ?>
 
 </body>
 
