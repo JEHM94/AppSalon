@@ -26,7 +26,7 @@ class LoginController
                 $usuario = Usuario::where('email', $auth->email);
                 // Si no existe el usuario Generamos el Error
                 if (empty($usuario)) {
-                    Usuario::setAlerta('error', 'El E-mail no se encuentra registrado');
+                    Usuario::setAlerta(ERROR, 'El E-mail no se encuentra registrado');
                     return;
                 } else {
                     // Usuario encontrado, se Procede a verificar la Contraseña
@@ -41,7 +41,6 @@ class LoginController
                         $_SESSION['email'] =  $usuario->email;
                         $_SESSION['login'] =  true;
                         // Redireccionamos al Usuario
-
                         if ($usuario->admin === "1") {
                             // Si el usuario es un administrador, agregamos Admin a la sesión
                             $_SESSION['admin'] = $usuario->admin ?? null;
@@ -61,7 +60,8 @@ class LoginController
 
         $router->render('auth/login', [
             'auth' => $auth,
-            'alertas' => $alertas
+            'alertas' => $alertas,
+            'usuario' => $usuario ?? null
         ]);
     }
 
@@ -75,16 +75,123 @@ class LoginController
         $alertas = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Obtenemos el Email e instanciamos un nuevo Usuario
+            $auth =  new Usuario($_POST);
+            // Validamos el Inicio de Sesión
+            $auth->validar(RECUPERAR_CUENTA);
+            // Obtener las Alertas de validación de formulario
+            $alertas = Usuario::getAlertas();
+            // Revisar que el Usuario pase la validación del Formulario
+            if (empty($alertas)) {
+                // Buscamos el usuario
+                $usuario = Usuario::where('email', $auth->email);
+                // Comprobamos si el usuario existe y si está confirmado
+                if ($usuario && $usuario->confirmado === '1') {
+                    // Generamos un nuevo Token para Reestablecer la contraseña
+                    $usuario->crearToken();
+                    // Actualizamos el usuario en la DB
+                    $resultado = $usuario->guardar();
+
+                    if ($resultado) {
+                        //**  Instanciamos y Enviamos E-mail de Reestablecimiento de contraseña
+                        $email = new Email($usuario->email, $usuario->nombre, $usuario->apellido, $usuario->token);
+                        if ($email->enviarConfirmacion(RECUPERAR_CUENTA)) {
+                            // Si el Email se envía correctamente, Generamos Alerta de éxito
+                            Usuario::setAlerta(EXITO, 'Las instrucciones para reestablecer su contraseña han sido enviadas a su e-mail');
+                        }
+                    }
+                } else {
+                    // Generamos Alerta de error
+                    Usuario::setAlerta(ERROR, 'El e-mail no existe o no está confirmado');
+                }
+            }
         }
+        // Obtener las Alertas de validación de formulario
+        $alertas = Usuario::getAlertas();
 
         $router->render('auth/olvide-password', [
             'alertas' => $alertas
         ]);
     }
 
-    public static function recuperar()
+    public static function recuperar(Router $router)
     {
-        echo 'desde recuperar';
+        $alertas = [];
+        $confirmado = true;
+        $actualizado = false;
+
+        // Verificamos el Token ingresado
+        $usuario = Usuario::verificarToken($_GET['token'] ?? null);
+        // Si existe un usuario y su token es válido, Comprobamos que su E-mail ya esté confirmado.
+        // En caso contrario, Mostramos una Alerta de Eror
+        if ($usuario->confirmado === '0') {
+            Usuario::setAlerta(ERROR, 'Su dirección de E-mail aún no ha sido Verificada');
+            $confirmado = false;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Leer la nueva Contraseña y guardarla
+            $password = new Usuario($_POST);
+            // Validamos la nueva Contraseña
+            $password->validar(CAMBIAR_PASSWORD);
+            // Obtenemos las alertas
+            $alertas = Usuario::getAlertas();
+            if (!$alertas) {
+                // Si no hay alertas reasignamos el Password y lo Hasheamos
+                $usuario->password = $password->password;
+                $usuario->hashPassword();
+                // Eliminamos el Token
+                $usuario->token = null;
+                // Actualizamos la Password en la DB
+                if ($usuario->guardar()) {
+                    $actualizado = true;
+                    // Creamos Alerta de Exito
+                    Usuario::setAlerta(EXITO, 'Contraseña cambiada Exitosamente');
+                }
+            }
+        }
+
+        // Obtenemos las alertas
+        $alertas = Usuario::getAlertas();
+
+        $router->render('auth/recuperar-password', [
+            'alertas' => $alertas,
+            'confirmado' => $confirmado,
+            'actualizado' => $actualizado,
+            'usuario' => $usuario
+        ]);
+    }
+
+    public static function reenviar(Router $router)
+    {
+        $alertas = [];
+        // Verificamos el Token ingresado
+        $usuario = Usuario::verificarToken($_GET['token'] ?? null);
+
+        // Si el Usuario ya está confirmado, Redireccionamos
+        if ($usuario->confirmado === '1') {
+            header('Locaion: /');
+        }
+        // Si el usuario aún no está confirmado procedemos a renovar el token y enviar el e-mail de verificación
+        // Renovamos el Token
+        $usuario->crearToken();
+        // Actualizamos el usuario en la DB
+        $resultado = $usuario->guardar();
+        if ($resultado) {
+            // Creamos el e-mail
+            $email = new Email($usuario->email, $usuario->nombre, $usuario->apellido, $usuario->token);
+            // Enviamos
+            if ($email->enviarConfirmacion(CUENTA_NUEVA)) {
+                // Si el Email se envía correctamente, Generamos Alerta de éxito
+                Usuario::setAlerta(EXITO, 'Revisa tu E-mail y sigue las instrucciones que fueron enviadas');
+            }
+        }
+        // Obtenemos las alertas
+        $alertas = Usuario::getAlertas();
+
+        $router->render('auth/reenviar-token', [
+            'alertas' => $alertas
+        ]);
     }
 
     public static function confirmar(Router $router)
@@ -101,7 +208,7 @@ class LoginController
         $usuario = Usuario::where('token', $token);
         if (empty($usuario)) {
             // Si no se encuantra ningún usuario, creamos alerta de Error
-            Usuario::setAlerta('error', 'Token no válido');
+            Usuario::setAlerta(ERROR, 'Token no válido');
             $textoBoton = 'Regresar';
         } else {
             // Modificar el Estado del Usuario a confirmado
@@ -111,7 +218,7 @@ class LoginController
             // Actualizamos el Estado del Usuario en la DB
             $usuario->guardar();
             // Mostrar mensaje de Éxito
-            Usuario::setAlerta('exito', '¡Cuenta Verificada Correctamente!');
+            Usuario::setAlerta(EXITO, '¡Cuenta Verificada Correctamente!');
             $textoBoton = 'Iniciar Sesión';
         }
 
@@ -161,7 +268,7 @@ class LoginController
                     if ($resultado) {
                         // Enviamos el E-mail de Confirmación de cuenta
                         $email = new Email($usuario->email, $usuario->nombre, $usuario->apellido, $usuario->token);
-                        $email->enviarConfirmacion();
+                        $email->enviarConfirmacion(CUENTA_NUEVA);
 
                         header('Location: /mensaje');
                     }

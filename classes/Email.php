@@ -19,7 +19,7 @@ class Email
         $this->token = $token;
     }
 
-    public function enviarConfirmacion()
+    public function enviarConfirmacion($tipoContenido)
     {
         // Create a new PHPMailer instance
         $mail = new PHPMailer();
@@ -36,29 +36,57 @@ class Email
         $mail->setFrom('cuentas@appsalon.com');
         $receptor = $this->nombre . " " . $this->apellido;
         $mail->addAddress($this->email, $receptor);
-        $mail->Subject = 'AppSalon - Confirma tu cuenta';
+
 
         // Enable HTML
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
 
-        // Email content
-        $contenido =  '<html>';
-        $contenido .= '<p><strong>Bienvenido/a ' . $receptor . '.</strong></p>';
-        $contenido .= '<p>¡Su cuenta en AppSalon ha sido creada exitosamente!.</p>';
-        $contenido .= '<p>Haga click en el siguiente enlace para confirmar su E-mail y poder acceder a su cuenta.</p>';
-        $contenido .= '<p><a href="http://localhost:3000/confirmar-cuenta?token=';
-        $contenido .= $this->token;
-        $contenido .= '">Confirmar E-mail</a></p>';
-        $contenido .= '<p>Si usted no solicitó la información anterior, puede ignorar este mensaje.</p>';
-        $contenido .= '</html>';
+        switch ($tipoContenido) {
 
-        $contenidoAlt = 'Bienvenido ' . $receptor . '. Visite el siguiente enlace para poder verificar su cuenta en AppSalon: http://localhost:3000/confirmar-cuenta?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
+            case CUENTA_NUEVA:
+                $mail->Subject = 'AppSalon - Confirma tu cuenta';
+                // Email content para Cuentas Nueva
+                $contenido =  '<html>';
+                $contenido .= '<p><strong>Bienvenido/a ' . $receptor . '.</strong></p>';
+                $contenido .= '<p>¡Su cuenta en AppSalon ha sido creada exitosamente!.</p>';
+                $contenido .= '<p>Haga click en el siguiente enlace para confirmar su E-mail y poder acceder a su cuenta.</p>';
+                $contenido .= '<p><a href="http://localhost:3000/confirmar-cuenta?token=';
+                $contenido .= $this->token;
+                $contenido .= '">Confirmar E-mail</a></p>';
+                $contenido .= '<p><strong>Si usted no solicitó la información anterior, puede ignorar este mensaje.</strong></p>';
+                $contenido .= '</html>';
+
+                // Texto plano alternativo
+                $contenidoAlt = 'Bienvenido ' . $receptor . '. Visite el siguiente enlace para poder verificar su cuenta en AppSalon: http://localhost:3000/confirmar-cuenta?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
+
+                break;
+            case RECUPERAR_CUENTA:
+                $mail->Subject = 'AppSalon - Reestablece tu contraseña';
+                // Email content para Recuperar Contraseña
+                $contenido =  '<html>';
+                $contenido .= '<p><strong>Hola ' . $receptor . '.</strong></p>';
+                $contenido .= '<p>Se ha solicitado el reestablecimiento de tu Contraseña.</p>';
+                $contenido .= '<p>Haga click en el siguiente enlace para reestablecer su contraseña y poder acceder a su cuenta.</p>';
+                $contenido .= '<p><a href="http://localhost:3000/recuperar?token=';
+                $contenido .= $this->token;
+                $contenido .= '">Reestablecer Contraseña</a></p>';
+                $contenido .= '<p><strong>Si usted no solicitó la información anterior, puede ignorar este mensaje.</strong></p>';
+                $contenido .= '</html>';
+
+                // Texto plano alternativo
+                $contenidoAlt = 'Hola ' . $receptor . '. Visite el siguiente enlace para reestablecer su contraseña en AppSalon: http://localhost:3000/confirmar-cuenta?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
+                break;
+            default:
+                $contenido = '';
+                $contenidoAlt = '';
+                break;
+        }
 
         $mail->Body = $contenido;
         $mail->AltBody = $contenidoAlt;
 
         // Send the Email
-        $mail->send();
+        return $mail->send();
     }
 }

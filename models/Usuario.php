@@ -38,42 +38,59 @@ class Usuario extends ActiveRecord
             case CUENTA_NUEVA:
                 // Validación de Nombre de Usuario
                 if (!$this->nombre) {
-                    self::$alertas['error'][] = 'Debe Ingresar su Nombre';
+                    self::$alertas[ERROR][] = 'Debe Ingresar su Nombre';
                 }
                 // Validación de Apellido de Usuario
                 if (!$this->apellido) {
-                    self::$alertas['error'][] = 'Debe Ingresar su Apellido';
+                    self::$alertas[ERROR][] = 'Debe Ingresar su Apellido';
                 }
                 // Validación de Teléfono de Usuario
                 if (!$this->telefono) {
-                    self::$alertas['error'][] = 'Debe Ingresar un Teléfono';
+                    self::$alertas[ERROR][] = 'Debe Ingresar un Teléfono';
                 } else {
                     if (strlen($this->telefono) != 10) {
-                        self::$alertas['error'][] = 'Número de Teléfono Inválido';
+                        self::$alertas[ERROR][] = 'Número de Teléfono Inválido';
                     }
                 }
                 // Validación de E-mail de Usuario
                 if (!$this->email) {
-                    self::$alertas['error'][] = 'Debe Ingresar su E-mail';
+                    self::$alertas[ERROR][] = 'Debe Ingresar su E-mail';
                 }
                 // Validación de Contraseña de Usuario
                 if (!$this->password) {
-                    self::$alertas['error'][] = 'Debe Ingresar una Contraseña';
+                    self::$alertas[ERROR][] = 'Debe Ingresar una Contraseña';
                 } else {
                     if (strlen($this->password) < 6) {
-                        self::$alertas['error'][] = 'La Contraseña debe tener un mínimo de 6 caracteres';
+                        self::$alertas[ERROR][] = 'La Contraseña debe tener un mínimo de 6 caracteres';
                     }
                 }
                 break;
             case CUENTA_EXISTENTE:
                 // Validación de E-mail de Usuario
                 if (!$this->email) {
-                    self::$alertas['error'][] = 'Debe Ingresar su E-mail';
+                    self::$alertas[ERROR][] = 'Debe Ingresar su E-mail';
                 }
                 // Validación de Contraseña de Usuario
                 if (!$this->password) {
-                    self::$alertas['error'][] = 'Debe Ingresar una Contraseña';
+                    self::$alertas[ERROR][] = 'Debe Ingresar una Contraseña';
                 }
+                break;
+            case RECUPERAR_CUENTA:
+                // Validación de E-mail de Usuario
+                if (!$this->email) {
+                    self::$alertas[ERROR][] = 'Debe Ingresar su E-mail';
+                }
+                break;
+            case CAMBIAR_PASSWORD:
+                // Validación de Contraseña de Usuario
+                if (!$this->password) {
+                    self::$alertas[ERROR][] = 'Debe Ingresar una Contraseña';
+                } else {
+                    if (strlen($this->password) < 6) {
+                        self::$alertas[ERROR][] = 'La Contraseña debe tener un mínimo de 6 caracteres';
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -91,7 +108,7 @@ class Usuario extends ActiveRecord
         $resultado = self::$db->query($query);
 
         if ($resultado->num_rows) {
-            self::$alertas['error'][] = 'El E-mail ya se encuentra en uso';
+            self::$alertas[ERROR][] = 'El E-mail ya se encuentra en uso';
         }
 
         return $resultado;
@@ -107,19 +124,40 @@ class Usuario extends ActiveRecord
         $this->token = uniqid();
     }
 
-    public function comprobarPasswordYVerificado($password) : bool
+    public function comprobarPasswordYVerificado($password): bool
     {
         // Verificamos que la contraseña ingresada coincida con la de la BD
         if (!password_verify($password, $this->password)) {
-            self::$alertas['error'][] = 'Contraseña Incorrecta';
+            self::$alertas[ERROR][] = 'Contraseña Incorrecta';
             return false;
         }
         // Si las contraseñas coinciden, procedemos a verificar si el usuario está confirmado
         if (!$this->confirmado) {
-            self::$alertas['error'][] = 'Debes Verificar tu cuenta antes de iniciar sesión';
+            self::$alertas[ERROR][] = 'Debes Verificar tu cuenta antes de iniciar sesión';
+            self::$alertas[NEUTRAL][] = 'Has click aquí para reenviar correo de Verificación';
             return false;
         }
         // Si la contraseña es correcta y el usuario está confirmado devolvemos TRUE
         return true;
+    }
+
+    public static function verificarToken($token)
+    {
+        // Obtenemos el token
+        $token = s($token);
+
+        // Si no existe ningún token, Redireccionamos
+        if (!$token) {
+            header('Location: /');
+            return;
+        }
+        // En caso de que exista un token, buscamos si existe algún usuario con el Token ingresado
+        $usuario = Usuario::where('token', $token);
+        // Si no existe ningún usuario con ese token, Redireccionamos
+        if (!$usuario) {
+            header('Location: /');
+            return;
+        }
+        return $usuario;
     }
 }
