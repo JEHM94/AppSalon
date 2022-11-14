@@ -19,15 +19,6 @@ class Router
 
     public function comprobarRutas()
     {
-        
-        // Proteger Rutas...
-        //session_start();
-
-        // Arreglo de rutas protegidas...
-        // $rutas_protegidas = ['/admin', '/propiedades/crear', '/propiedades/actualizar', '/propiedades/eliminar', '/vendedores/crear', '/vendedores/actualizar', '/vendedores/eliminar'];
-
-        // $auth = $_SESSION['login'] ?? null;
-
         $currentUrl = $_SERVER['PATH_INFO'] ?? '/';
         $method = $_SERVER['REQUEST_METHOD'];
 
@@ -37,8 +28,26 @@ class Router
             $fn = $this->postRoutes[$currentUrl] ?? null;
         }
 
+        //******* RUTAS PROTEGIDAS ******
+        session_start();
+        // Autenticación del usuario
+        $auth = $_SESSION['login'] ?? null;
 
-        if ( $fn ) {
+        // Array de Rutas Protegidas
+        $protected_routes = [
+            '/cita',
+            '/api/servicios',
+            '/api/citas'
+        ];
+
+        // Si la Url actual es una ruta protegida
+        // y el usuario no está autenticado redirecciona a /
+        if (in_array($currentUrl, $protected_routes) && !$auth) {
+            header('Location: /');
+        }
+        //******* RUTAS PROTEGIDAS FIN ******
+
+        if ($fn) {
             // Call user fn va a llamar una función cuando no sabemos cual sera
             call_user_func($fn, $this); // This es para pasar argumentos
         } else {

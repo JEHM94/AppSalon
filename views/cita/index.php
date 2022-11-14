@@ -2,6 +2,11 @@
 
 <p class="descripcion-pagina">Elige tus servicios y coloca tus datos</p>
 
+<div class="barra">
+    <p>Hola, <?php echo $nombre ?? ''; ?>.</p>
+    <a class="boton" href="/logout">Cerrar Sesión</a>
+</div><!-- .barra -->
+
 <div class="app">
     <nav class="tabs">
         <button type="button" data-paso="1" class="actual">Servicios</button>
@@ -34,6 +39,8 @@
                 <label for="hora">Hora</label>
                 <input type="time" id="hora" name="hora">
             </div><!-- .campo -->
+
+            <input type="hidden" id="id" value="<?php echo $id ?>">
         </form>
     </div> <!-- .seccion -->
 
@@ -48,4 +55,8 @@
     </div>
 </div> <!-- .app -->
 
-<?php $script = '<script src="build/js/app.js"></script>'; ?>
+<?php
+$script = '
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="build/js/app.js"></script>
+'; ?>

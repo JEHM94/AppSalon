@@ -4,6 +4,7 @@ const pasoInicial = 1;
 const pasoFinal = 3;
 // Variable para crear la Cita
 const cita = {
+    id: '',
     nombre: '',
     fecha: '',
     hora: '',
@@ -27,6 +28,8 @@ function iniciarApp() {
     paginaSiguiente();
     // Consulta la API en el backend de PHP
     consultarAPI();
+    // Obtiene el id del Cliente y lo Asigna al objeto de Cita
+    idCliente();
     // Obtiene el nombre del Cliente y lo Asigna al objeto de Cita
     nombreCliente();
     // Agrega la fecha al Objeto de Cita
@@ -117,7 +120,7 @@ function paginaSiguiente() {
 async function consultarAPI() {
     try {
         // EndPoint de la API
-        const url = 'http://localhost:3000/api/servicios';
+        const url = 'http://127.0.0.1:3000/api/servicios';
         // Consultamos el EndPoint y obtenemos resultando en formato Json
         const resultado = await fetch(url);
         const servicios = await resultado.json();
@@ -190,6 +193,11 @@ function seleccionarServicio(servicio) {
         // Asignamos su clase CSS de Servicio seleccionado
         divServicio.classList.add('seleccionado');
     }
+}
+
+function idCliente() {
+    cita.id = document.querySelector('#id').value;
+
 }
 
 function nombreCliente() {
@@ -346,6 +354,7 @@ function mostrarResumen() {
         resumen.appendChild(contenedorServicio);
 
     });
+    // ----------------------------------------------------------
 
     // Heading de detalles de la cita
     const headingCita = document.createElement('H3');
@@ -377,8 +386,63 @@ function mostrarResumen() {
     const horaCita = document.createElement('P');
     horaCita.innerHTML = `<span>Hora:</span> ${hora} Horas`;
 
-    // Agregamos los Párrafos de nombre, fecha y hora al resumen
+    // Agrega los Párrafos de nombre, fecha y hora al resumen
     resumen.appendChild(nombreCliente);
     resumen.appendChild(fechaCita);
     resumen.appendChild(horaCita);
+    // ----------------------------------------------------------
+
+    // Botón para reservar la Cita
+    const botonReservar = document.createElement('BUTTON');
+    botonReservar.classList.add('boton');
+    botonReservar.textContent = 'Reservar Cita';
+    botonReservar.onclick = reservarCita;
+
+    // Agrega el Botón al resumen
+    resumen.appendChild(botonReservar);
+}
+
+async function reservarCita() {
+    const { id, fecha, hora, servicios } = cita;
+
+    const idServicio = servicios.map(servicio => servicio.id);
+
+    const datos = new FormData();
+    datos.append('usuarios_id', id);
+    datos.append('fecha', fecha);
+    datos.append('hora', hora);
+    datos.append('servicios', idServicio);
+
+    const url = 'http://127.0.0.1:3000/api/citas';
+
+    try {
+        const respuesta = await fetch(url, {
+            method: 'POST',
+            body: datos
+        });
+
+        const resultado = await respuesta.json();
+
+        if (resultado.resultado) {
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Cita Creada',
+                text: 'Su cita ha sido reservada correctamente',
+                button: 'OK'
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Ha ocurrido un error al guardar la cita. Por favor, intentelo más tarde.'
+        })
+    }
+
+
+
+
 }
