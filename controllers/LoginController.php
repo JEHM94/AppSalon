@@ -10,6 +10,14 @@ class LoginController
 {
     public static function login(Router $router)
     {
+        // Verifica que no exista una sesión activa antes de iniciar el proceso de login
+        $isAuth = $_SESSION['login'] ?? null;
+
+        if ($isAuth) {
+            header('Location: /cita');
+            return;
+        }
+
         $auth = new Usuario();
         $alertas = [];
 
@@ -34,7 +42,6 @@ class LoginController
                     // Si el Usuario ha sido verificado correctamente procedemos a Iniciar Sesión
                     if ($verificado) {
                         // Autenticamos al usuario
-                        session_start();
                         // Asignamos los datos de la cuenta a la sesión
                         $_SESSION['id'] =  $usuario->id;
                         $_SESSION['nombre'] =  $usuario->nombre . ' ' .  $usuario->apellido;
@@ -46,6 +53,8 @@ class LoginController
                             $_SESSION['admin'] = $usuario->admin ?? null;
                             // Redireccionamos a Admin
                             header('Location: /admin');
+                            // Retornamos para evitar que se ejecute el siguiente 
+                            // header('Location: /cita'); sustituyendo al de Admin
                             return;
                         }
                         // Si es un usuario regular, Redireccionamos a la página de Citas

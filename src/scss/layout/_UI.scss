@@ -26,6 +26,7 @@
 
         @include m.tablet {
             padding: 3rem 0;
+            overflow: scroll;
         }
     }
 }
@@ -34,6 +35,11 @@
 
     margin: v.$separacion 0;
     text-align: center;
+
+    span{
+        color: v.$azul;
+        font-weight: v.$bold;
+    }
 
     @include m.tablet {
         display: flex;

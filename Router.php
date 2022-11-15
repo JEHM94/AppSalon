@@ -32,19 +32,34 @@ class Router
         session_start();
         // Autenticación del usuario
         $auth = $_SESSION['login'] ?? null;
+        $admin = $_SESSION['admin'] ?? null;
 
         // Array de Rutas Protegidas
-        $protected_routes = [
+        $protectedRoutes = [
             '/cita',
             '/api/servicios',
             '/api/citas'
         ];
 
+        // Array de Rutas Protegidas de Administrador
+        $adminRoutes = [
+            '/admin'
+        ];
+
         // Si la Url actual es una ruta protegida
-        // y el usuario no está autenticado redirecciona a /
-        if (in_array($currentUrl, $protected_routes) && !$auth) {
+        // y el usuario no está autenticado, redirecciona a /
+        if (in_array($currentUrl, $protectedRoutes) && !$auth) {
             header('Location: /');
         }
+
+        // Si la Url actual es una ruta de Administrador
+        // y el usuario no está autenticado como Admin, redirecciona a /
+        if (in_array($currentUrl, $adminRoutes) && !$admin) {
+            header('Location: /');
+        }
+
+
+
         //******* RUTAS PROTEGIDAS FIN ******
 
         if ($fn) {

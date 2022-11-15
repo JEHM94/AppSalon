@@ -344,7 +344,7 @@ function mostrarResumen() {
 
         // Párrafo con el precio del servicio
         const precioServicio = document.createElement('P');
-        precioServicio.innerHTML = `<span>Precio:</span> ${precio}`;
+        precioServicio.innerHTML = `<span>Precio:</span> $${precio}`;
 
         // Agregamos los párrafos de nombre y precio al contenedor de servicio
         contenedorServicio.appendChild(textoServicio);

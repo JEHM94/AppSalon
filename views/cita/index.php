@@ -2,10 +2,7 @@
 
 <p class="descripcion-pagina">Elige tus servicios y coloca tus datos</p>
 
-<div class="barra">
-    <p>Hola, <?php echo $nombre ?? ''; ?>.</p>
-    <a class="boton" href="/logout">Cerrar Sesión</a>
-</div><!-- .barra -->
+<?php include_once __DIR__ . '/../templates/barra.php' ?>
 
 <div class="app">
     <nav class="tabs">
