@@ -10,8 +10,29 @@ class AdminController
 
     public static function index(Router $router)
     {
-        // Fecha actual para mostrar las citas de ese día por defecto
-        $fecha = date('Y-m-d');
+        // Obtiene la fecha ingresada
+        $fecha = $_GET['fecha'] ?? null;
+
+        if ($fecha) {
+            // Crea un array separando la fecha por "-"
+            $fechaValida = explode('-', $fecha);
+
+            // Si el array no contiene 3 posiciones separadas por "-" (2000-12-22), redirecciona
+            if (sizeof($fechaValida) !== 3) header('Location: /admin');
+
+            // Verifica que los elementos del array no esten vacíos
+            foreach ($fechaValida as $elemento) if (!$elemento) header('Location: /admin');
+
+            // Verifica que sea una fecha válida o redirecciona
+            if (!checkdate($fechaValida[1], $fechaValida[2], $fechaValida[0])) header('Location: /admin');
+        } else {
+            // Si no fue ingresada ninguna fecha
+            // Asigna la fecha actual para mostrar las citas de ese día por defecto
+            date_default_timezone_set("America/Mexico_City");
+            $fecha = date('Y-m-d');
+        }
+
+
 
         // Consulta las citas 
         $consulta = "SELECT citas.id, citas.hora, CONCAT( usuarios.nombre, ' ', usuarios.apellido) as cliente, ";

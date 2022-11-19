@@ -4,6 +4,10 @@
     list-style: none;
     padding: 0;
 
+    h3{
+        padding: 5rem;
+    }
+
     li {
         padding: 1rem;
         border-top: 1px solid v.$blanco;
@@ -28,5 +32,11 @@
         .total{
             color: v.$blanco;
         }
+    }
+}
+
+.busqueda{
+    h4{
+        text-align: center;
     }
 }

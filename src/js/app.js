@@ -441,8 +441,4 @@ async function reservarCita() {
             text: 'Ha ocurrido un error al guardar la cita. Por favor, intentelo más tarde.'
         })
     }
-
-
-
-
 }

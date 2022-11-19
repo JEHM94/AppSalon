@@ -38,7 +38,8 @@ class Router
         $protectedRoutes = [
             '/cita',
             '/api/servicios',
-            '/api/citas'
+            '/api/citas',
+            '/api/eliminar'
         ];
 
         // Array de Rutas Protegidas de Administrador

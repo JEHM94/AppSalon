@@ -42,4 +42,15 @@ class APIController
         // Retornamos la Respuesta
         echo json_encode(['resultado' => $resultado]);
     }
+
+    public static function eliminar()
+    {
+        $resultado = null;
+        // Busca la cita por su id
+        $cita = Cita::find($_POST['citaId']);
+        // Elimina la cita en caso de ser encontrada
+        if ($cita) $resultado = $cita->eliminar();
+
+        echo json_encode(['resultado' => $resultado]);
+    }
 }
