@@ -59,7 +59,6 @@ class ServicioController
         $id = filter_var($id, FILTER_VALIDATE_INT);
         // Si el id no es un número entero, redirecciona
         if (!$id) header('Location: /');
-
         // Busca el servicio con el id ingresado
         $servicio = Servicio::find($id);
 
