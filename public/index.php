@@ -46,7 +46,8 @@ $router->get('/cita', [CitaController::class, 'index']);
 // API Citas
 $router->get('/api/servicios', [APIController::class, 'index']);
 $router->post('/api/citas', [APIController::class, 'guardar']);
-$router->post('/api/eliminar', [APIController::class, 'eliminar']);
+$router->post('/api/eliminarCita', [APIController::class, 'eliminarCita']);
+$router->post('/api/eliminarServicio', [APIController::class, 'eliminarServicio']);
 
 // CRUD Servicios
 $router->get('/servicios', [ServicioController::class, 'index']);
@@ -56,8 +57,6 @@ $router->post('/servicios/crear', [ServicioController::class, 'crear']);
 // Actualizar Servicio
 $router->get('/servicios/actualizar', [ServicioController::class, 'actualizar']);
 $router->post('/servicios/actualizar', [ServicioController::class, 'actualizar']);
-// Eliminar Servicio
-$router->post('/servicios/eliminar', [ServicioController::class, 'eliminar']);
 
 // Admin
 $router->get('/admin', [AdminController::class, 'index']);

@@ -31,9 +31,9 @@ function alertaEliminarServicio() {
 }
 
 async function eliminarServicio(servicioId) {
-    // URL Para eliminación de citas
-    const url = 'http://127.0.0.1:3000/api/eliminar';
-    // Contruye el FormData con el id de la cita a eliminar
+    // URL Para eliminación de servicios
+    const url = 'http://127.0.0.1:3000/api/eliminarServicio';
+    // Contruye el FormData con el id del servicio a eliminar
     const datos = new FormData();
     datos.append('servicioId', servicioId);
 
@@ -45,7 +45,7 @@ async function eliminarServicio(servicioId) {
         });
         const resultado = await respuesta.json();
 
-        // Alerta cita fue eliminada exitosamente
+        // Alerta servicio eliminado exitosamente
         if (resultado.resultado) {
             Swal.fire({
                 icon: 'success',

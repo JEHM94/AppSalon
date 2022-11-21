@@ -92,11 +92,4 @@ class ServicioController
             'alertas' => $alertas
         ]);
     }
-
-    public static function eliminar()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        }
-        echo 'eliminando';
-    }
 }

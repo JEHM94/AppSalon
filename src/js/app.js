@@ -428,8 +428,7 @@ async function reservarCita() {
             Swal.fire({
                 icon: 'success',
                 title: 'Cita Creada',
-                text: 'Su cita ha sido reservada correctamente',
-                button: 'OK'
+                text: 'Su cita ha sido reservada correctamente'
             }).then(() => {
                 window.location.reload();
             });

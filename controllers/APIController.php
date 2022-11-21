@@ -43,13 +43,24 @@ class APIController
         echo json_encode(['resultado' => $resultado]);
     }
 
-    public static function eliminar()
+    public static function eliminarCita()
     {
         $resultado = null;
         // Busca la cita por su id
         $cita = Cita::find($_POST['citaId']);
         // Elimina la cita en caso de ser encontrada
         if ($cita) $resultado = $cita->eliminar();
+
+        echo json_encode(['resultado' => $resultado]);
+    }
+
+    public static function eliminarServicio()
+    {
+        $resultado = null;
+        // Busca el servicio por su id
+        $servicio = Servicio::find($_POST['servicioId']);
+        // Elimina el servicio en caso de ser encontrada
+        if ($servicio) $resultado = $servicio->eliminar();
 
         echo json_encode(['resultado' => $resultado]);
     }

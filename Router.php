@@ -39,7 +39,8 @@ class Router
             '/cita',
             '/api/servicios',
             '/api/citas',
-            '/api/eliminar'
+            '/api/eliminarCita',
+            '/api/eliminarServicio'
         ];
 
         // Array de Rutas Protegidas de Administrador
@@ -47,8 +48,7 @@ class Router
             '/admin',
             '/servicios',
             '/servicios/crear',
-            '/servicios/actualizar',
-            '/servicios/eliminar'
+            '/servicios/actualizar'
         ];
 
         // Si la Url actual es una ruta protegida
