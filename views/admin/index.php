@@ -26,7 +26,7 @@
         ?>
                 <li>
                     <p>ID: <span><?php echo $cita->id; ?></span></p>
-                    <p>Hora: <span><?php echo $cita->hora; ?></span></p>
+                    <p>Hora: <span><?php echo $cita->hora; ?> Hrs.</span></p>
                     <p>Cliente: <span><?php echo $cita->cliente; ?></span></p>
                     <p>E-mail: <span><?php echo $cita->email; ?></span></p>
                     <p>Teléfono: <span><?php echo $cita->telefono; ?></span></p>

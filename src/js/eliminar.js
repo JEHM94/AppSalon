@@ -4,7 +4,7 @@ function alertaEliminarCita() {
         const citaId = boton.id;
         boton.addEventListener('click', function () {
             Swal.fire({
-                title: `¿Está seguro que desea eliminar la Cita ID: ${citaId}?`,
+                title: `¿Está seguro que desea eliminar esta Cita? ID: ${citaId}.`,
                 text: "¡No Podrá deshacer esta acción!",
                 icon: 'warning',
                 showCancelButton: true,
