@@ -6,6 +6,7 @@ use Controllers\AdminController;
 use Controllers\APIController;
 use Controllers\CitaController;
 use Controllers\LoginController;
+use Controllers\ServicioController;
 use MVC\Router;
 
 $router = new Router();
@@ -46,6 +47,17 @@ $router->get('/cita', [CitaController::class, 'index']);
 $router->get('/api/servicios', [APIController::class, 'index']);
 $router->post('/api/citas', [APIController::class, 'guardar']);
 $router->post('/api/eliminar', [APIController::class, 'eliminar']);
+
+// CRUD Servicios
+$router->get('/servicios', [ServicioController::class, 'index']);
+// Crear Servicio
+$router->get('/servicios/crear', [ServicioController::class, 'crear']);
+$router->post('/servicios/crear', [ServicioController::class, 'crear']);
+// Actualizar Servicio
+$router->get('/servicios/actualizar', [ServicioController::class, 'actualizar']);
+$router->post('/servicios/actualizar', [ServicioController::class, 'actualizar']);
+// Eliminar Servicio
+$router->post('/servicios/eliminar', [ServicioController::class, 'eliminar']);
 
 // Admin
 $router->get('/admin', [AdminController::class, 'index']);

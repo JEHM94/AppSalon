@@ -33,10 +33,10 @@
 
 .barra {
 
-    margin: v.$separacion 0;
+    margin: calc(v.$separacion / 2) 0;
     text-align: center;
 
-    span{
+    span {
         color: v.$azul;
         font-weight: v.$bold;
     }
@@ -50,5 +50,18 @@
     .boton {
         @include m.boton(v.$negro, v.$blanco);
         margin: 0;
+    }
+}
+
+.barra-servicios {
+    margin-bottom: v.$separacion;
+
+    @include m.tablet {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .boton {
+        margin: 0 0 1rem 0;
     }
 }

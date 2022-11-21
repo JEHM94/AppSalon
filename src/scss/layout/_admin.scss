@@ -4,7 +4,7 @@
     list-style: none;
     padding: 0;
 
-    h3{
+    h3 {
         padding: 5rem;
     }
 
@@ -29,14 +29,26 @@
             }
         }
 
-        .total{
+        .total {
             color: v.$blanco;
         }
     }
 }
 
-.busqueda{
-    h4{
+.busqueda {
+    h4 {
         text-align: center;
+    }
+}
+
+.servicios {
+    @extend .citas;
+
+    .acciones{
+        margin: 0;
+    }
+    .boton,
+    .boton-eliminar{
+        margin: 1rem;
     }
 }

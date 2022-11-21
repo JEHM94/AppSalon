@@ -44,11 +44,8 @@
                 if ($idActual !== $idProximo) :
                 ?>
                     <p class="total">Total a pagar: $<?php echo $total; ?></p>
-
-                    <!-- <form action="api/eliminar" method="POST"> -->
-                    <input type="hidden" name="idEliminar" id="idEliminar" value="<?php echo $cita->id; ?>">
+                    
                     <input type="button" id="<?php echo $cita->id; ?>" class="boton-eliminar" value="Eliminar Cita">
-                    <!-- </form> -->
             <?php
                 endif;
             endforeach;

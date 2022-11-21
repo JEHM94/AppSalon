@@ -44,7 +44,11 @@ class Router
 
         // Array de Rutas Protegidas de Administrador
         $adminRoutes = [
-            '/admin'
+            '/admin',
+            '/servicios',
+            '/servicios/crear',
+            '/servicios/actualizar',
+            '/servicios/eliminar'
         ];
 
         // Si la Url actual es una ruta protegida
