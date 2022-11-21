@@ -12,4 +12,13 @@ if ($isAdmin) :
         <a class="boton" href="/servicios">Ver Servicios</a>
         <a class="boton" href="/servicios/crear">Nuevo Servicio</a>
     </div>
-<?php endif; ?>
+<?php
+else :
+?>
+    <div class="barra-servicios">
+        <a class="boton" href="/cita">Nueva Cita</a>
+        <a class="boton" href="/cita/ver">Ver Citas</a>
+    </div>
+<?php
+endif;
+?>

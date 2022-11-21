@@ -55,7 +55,6 @@
 
 <?php
 $script = '
-    <script src="build/js/buscador.js"></script>
     <script src="build/js/eliminar.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 '; ?>

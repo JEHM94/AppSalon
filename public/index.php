@@ -42,6 +42,7 @@ $router->get('/reenviar', [LoginController::class, 'reenviar']);
 // ******/ |Area Privada| // ******/ 
 // Citas
 $router->get('/cita', [CitaController::class, 'index']);
+$router->get('/cita/ver', [CitaController::class, 'ver']);
 
 // API Citas
 $router->get('/api/servicios', [APIController::class, 'index']);

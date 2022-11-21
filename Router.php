@@ -37,6 +37,7 @@ class Router
         // Array de Rutas Protegidas
         $protectedRoutes = [
             '/cita',
+            '/cita/ver',
             '/api/servicios',
             '/api/citas',
             '/api/eliminarCita'
