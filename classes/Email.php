@@ -75,7 +75,7 @@ class Email
                 $contenido .= '</html>';
 
                 // Texto plano alternativo
-                $contenidoAlt = 'Hola ' . $receptor . '. Visite el siguiente enlace para reestablecer su contraseña en AppSalon: http://localhost:3000/confirmar-cuenta?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
+                $contenidoAlt = 'Hola ' . $receptor . '. Visite el siguiente enlace para reestablecer su contraseña en AppSalon: http://localhost:3000/recuperar?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
                 break;
             default:
                 $contenido = '';
