@@ -32,7 +32,7 @@ function alertaEliminarServicio() {
 
 async function eliminarServicio(servicioId) {
     // URL Para eliminación de servicios
-    const url = 'http://127.0.0.1:3000/api/eliminarServicio';
+    const url = `${location.origin}/api/eliminarServicio`;
     // Contruye el FormData con el id del servicio a eliminar
     const datos = new FormData();
     datos.append('servicioId', servicioId);

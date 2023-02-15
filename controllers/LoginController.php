@@ -35,7 +35,6 @@ class LoginController
                 // Si no existe el usuario Generamos el Error
                 if (empty($usuario)) {
                     Usuario::setAlerta(ERROR, 'El E-mail no se encuentra registrado');
-                    return;
                 } else {
                     // Usuario encontrado, se Procede a verificar la Contraseña
                     $verificado = $usuario->comprobarPasswordYVerificado($auth->password);
@@ -151,7 +150,7 @@ class LoginController
                 $usuario->password = $password->password;
                 $usuario->hashPassword();
                 // Eliminamos el Token
-                $usuario->token = null;
+                $usuario->token = '';
                 // Actualizamos la Password en la DB
                 if ($usuario->guardar()) {
                     $actualizado = true;
@@ -224,7 +223,7 @@ class LoginController
             // Modificar el Estado del Usuario a confirmado
             $usuario->confirmado = 1;
             // Eliminamos el Token para que no pueda ser utilizado en otras transsaciones
-            $usuario->token = null;
+            $usuario->token = '';
             // Actualizamos el Estado del Usuario en la DB
             $usuario->guardar();
             // Mostrar mensaje de Éxito
@@ -278,9 +277,9 @@ class LoginController
                     if ($resultado) {
                         // Enviamos el E-mail de Confirmación de cuenta
                         $email = new Email($usuario->email, $usuario->nombre, $usuario->apellido, $usuario->token);
-                        $email->enviarConfirmacion(CUENTA_NUEVA);
-
-                        header('Location: /mensaje');
+                        if ($email->enviarConfirmacion(CUENTA_NUEVA)) {
+                            header('Location: /mensaje');
+                        }
                     }
                 }
             }

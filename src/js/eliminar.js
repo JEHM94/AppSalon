@@ -23,7 +23,7 @@ function alertaEliminarCita() {
 
 async function eliminarCita(citaID) {
     // URL Para eliminación de citas
-    const url = 'http://127.0.0.1:3000/api/eliminarCita';
+    const url = `${location.origin}/api/eliminarCita`;
     // Contruye el FormData con el id de la cita a eliminar
     const datos = new FormData();
     datos.append('citaId', citaID);

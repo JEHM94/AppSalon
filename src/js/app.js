@@ -1,3 +1,4 @@
+const site = `${location.origin}`;
 // Variable del Paginador
 let paso = 1;
 const pasoInicial = 1;
@@ -120,7 +121,7 @@ function paginaSiguiente() {
 async function consultarAPI() {
     try {
         // EndPoint de la API
-        const url = 'http://127.0.0.1:3000/api/servicios';
+        const url = site + '/api/servicios';
         // Consultamos el EndPoint y obtenemos resultando en formato Json
         const resultado = await fetch(url);
         const servicios = await resultado.json();
@@ -300,10 +301,13 @@ function removerAlertaPrevia() {
 
 function esFechaPasada(fecha) {
     // Creamos un objeto con la fecha actual
+    let fechaActual = new Date().toLocaleString('en-us', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+    /*
+        Borrar
     let hoy = new Date();
     // Formateamos la fecha Actual YYYY-MM-DD
-    const fechaActual = hoy.getFullYear() + "-" + (hoy.getMonth() + 1) + "-" + hoy.getDate();
-
+    const fechaActual = hoy.getFullYear() + "-" + (hoy.getMonth() + 1) + "-" + hoy.getDate(); 
+    */
     return fecha <= fechaActual;
 }
 
@@ -413,7 +417,7 @@ async function reservarCita() {
     datos.append('hora', hora);
     datos.append('servicios', idServicio);
 
-    const url = 'http://127.0.0.1:3000/api/citas';
+    const url = site + '/api/citas';
 
     try {
         const respuesta = await fetch(url, {
