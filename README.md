@@ -1,3 +1,3 @@
 # AppSalon
- App para Citas de Saon de Belleza
+ App para Citas de Salon de Belleza
  Sitio: https://jehm-appsalon.alwaysdata.net/
